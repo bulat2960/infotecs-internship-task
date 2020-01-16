@@ -29,8 +29,6 @@ void Primes::append(int value)
         tail->next = node;
         tail = node;
     }
-
-    length++;
 }
 
 int Primes::size() const

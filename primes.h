@@ -15,8 +15,6 @@ private:
 
     Node* head = nullptr;
     Node* tail = nullptr;
-
-    int length = 0;
 public:
     class Iterator
     {

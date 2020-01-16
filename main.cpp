@@ -14,7 +14,6 @@ void print(const Primes& primes)
 
 int main(int argc, char** argv)
 {
-
     Primes p;
     p.append(10);
     p.append(20);
