@@ -1,6 +1,8 @@
 #ifndef PRIMES_H
 #define PRIMES_H
 
+#include <cmath>
+
 class Primes
 {
 private:
@@ -15,6 +17,12 @@ private:
 
     Node* head = nullptr;
     Node* tail = nullptr;
+
+    bool findType;
+    int findTypeValue;
+private:
+    bool isSimple(int x);
+    void append(int value);
 public:
     class Iterator
     {
@@ -28,13 +36,12 @@ public:
         bool operator!=(const Iterator& it) {return node != it.node;}
     };
 
-    Primes();
+    Primes(bool findType, int findTypeValue);
+
+    void calculatePrimes();
 
     Iterator begin() const;
     Iterator end() const;
-
-    void append(int value);
-    void print() const;
 
     int size() const;
 };

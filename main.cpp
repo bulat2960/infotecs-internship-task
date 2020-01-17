@@ -66,12 +66,8 @@ int main(int argc, char** argv)
     storage.setParams(argc, argv);
     storage.printParams();
 
-    Primes p;
-    p.append(10);
-    p.append(20);
-    p.append(30);
-    p.append(40);
-
+    Primes p(storage.findType, storage.findTypeValue);
+    p.calculatePrimes();
     print(p);
 
     return 0;
