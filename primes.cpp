@@ -1,6 +1,6 @@
 #include "primes.h"
 
-Primes::Primes(bool findType, int findTypeValue) : findType(findType), findTypeValue(findTypeValue)
+Primes::Primes(bool isRangeSearch, int value) : isRangeSearch(isRangeSearch), value(value)
 {
 
 }
@@ -45,9 +45,9 @@ bool Primes::isSimple(int x)
 
 void Primes::calculatePrimes()
 {
-    if (findType == false)
+    if (isRangeSearch)
     {
-        for (int i = 1; i <= findTypeValue; i++)
+        for (int i = 1; i <= value; i++)
         {
             if (isSimple(i))
             {
@@ -60,10 +60,11 @@ void Primes::calculatePrimes()
         int addCounter = 0;
         int numberCounter = 1;
 
-        while (addCounter < findTypeValue)
+        while (addCounter < value)
         {
             if (isSimple(numberCounter))
             {
+                append(numberCounter);
                 addCounter++;
             }
             numberCounter++;

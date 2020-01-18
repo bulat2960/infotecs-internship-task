@@ -18,8 +18,8 @@ private:
     Node* head = nullptr;
     Node* tail = nullptr;
 
-    bool findType;
-    int findTypeValue;
+    bool isRangeSearch;
+    int value;
 private:
     bool isSimple(int x);
     void append(int value);
