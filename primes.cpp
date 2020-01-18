@@ -31,7 +31,7 @@ void Primes::append(int value)
     }
 }
 
-bool Primes::isSimple(int x)
+bool Primes::isPrime(int x) const
 {
     for (int i = 2; i <= sqrt(x); i++)
     {
@@ -47,9 +47,9 @@ void Primes::calculatePrimes()
 {
     if (isRangeSearch)
     {
-        for (int i = 1; i <= value; i++)
+        for (int i = 2; i <= value; i++)
         {
-            if (isSimple(i))
+            if (isPrime(i))
             {
                 append(i);
             }
@@ -58,11 +58,11 @@ void Primes::calculatePrimes()
     else
     {
         int addCounter = 0;
-        int numberCounter = 1;
+        int numberCounter = 2;
 
         while (addCounter < value)
         {
-            if (isSimple(numberCounter))
+            if (isPrime(numberCounter))
             {
                 append(numberCounter);
                 addCounter++;

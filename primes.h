@@ -21,7 +21,6 @@ private:
     bool isRangeSearch;
     int value;
 private:
-    bool isSimple(int x);
     void append(int value);
 public:
     class Iterator
@@ -39,6 +38,8 @@ public:
     Primes(bool findType, int findTypeValue);
 
     void calculatePrimes();
+
+    bool isPrime(int x) const;
 
     Iterator begin() const;
     Iterator end() const;

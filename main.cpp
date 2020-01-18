@@ -32,7 +32,7 @@ struct ParamStorage
             {
                 filename = string(argv[i + 1]);
             }
-            else if (param== "-o" || param == "-option")
+            else if (param== "-o" || param == "--option")
             {
                 isRowOutput = atoi(argv[i + 1]);
             }
@@ -45,11 +45,25 @@ struct ParamStorage
 
     void printParams()
     {
-        cout << "Type - range search? " << isRangeSearch << endl;
-        cout << "Value = " << value << endl;
-        cout << "Filename = " << filename << endl;
-        cout << "Is row output? " << isRowOutput << endl;
-        cout << "Sequence type = " << sequenceType << endl;
+        cout << "Type: " << (isRangeSearch ? "range search" : "certain amount of numbers") << endl;
+        cout << "Value: " << value << endl;
+        cout << "Filename: " << filename << endl;
+        cout << "Output type: " << (isRowOutput ? "row" : "column") << endl;
+
+        string s;
+        if (sequenceType == 0)
+        {
+            s = "all simple numbers";
+        }
+        if (sequenceType == 1)
+        {
+            s = "Sophie Germain prime numbers";
+        }
+        if (sequenceType == 2)
+        {
+            s = "Mersenn prime numbers";
+        }
+        cout << "Sequence type: " << s << endl;
     }
 };
 
@@ -67,9 +81,45 @@ void print(const Primes& primes, string filename, bool isRowOutput, int sequence
 
     string separator = (isRowOutput) ? " " : "\n";
 
+    auto checkSophieGermainPrime = [primes](int n) // Простое число Софи Жермен (такое, что 2*p + 1 - простое)
+    {
+        return primes.isPrime(2 * n + 1);
+    };
+
+    auto checkMersennPrime = [](int n) // Простое число Мерсенна (число вида 2^n - 1)
+    {
+        n += 1;
+
+        int start = 1;
+        while (start <= n)
+        {
+            if (start == n)
+            {
+                return true;
+            }
+            start *= 2;
+        }
+        return false;
+    };
+
     for (auto it = primes.begin(); it != primes.end(); it++)
     {
         int value = *it;
+
+        if (sequenceType == 1)
+        {
+            if (!checkSophieGermainPrime(value))
+            {
+                continue;
+            }
+        }
+        if (sequenceType == 2)
+        {
+            if (!checkMersennPrime(value))
+            {
+                continue;
+            }
+        }
 
         if (isFileOutput)
         {
