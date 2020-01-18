@@ -81,3 +81,8 @@ int Primes::size() const
     }
     return s;
 }
+
+int Primes::sizeofElement() const
+{
+    return sizeof(Node);
+}

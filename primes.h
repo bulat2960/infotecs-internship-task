@@ -45,6 +45,7 @@ public:
     Iterator end() const;
 
     int size() const;
+    int sizeofElement() const;
 };
 
 #endif // PRIMES_H

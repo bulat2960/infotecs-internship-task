@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <chrono>
 
 #include "primes.h"
 
@@ -13,6 +14,7 @@ struct ParamStorage
     string filename; // Файл для вывода, по умолчанию не задан (если не задан - печать в консоль)
     bool isRowOutput = false; // true - режим печати в строчку, false - режим печати в столбец
     int sequenceType = 0; // 0 - по умолчанию (вывод всех простых чисел), >0 - спец. последовательность
+    string logfile; // Файл для логирования информации
 
     void setParams(int argc, char** argv)
     {
@@ -40,46 +42,90 @@ struct ParamStorage
             {
                 sequenceType = atoi(argv[i + 1]);
             }
+            else if (param == "-l" || param == "--log")
+            {
+                logfile = string(argv[i + 1]);
+            }
         }
+    }
+
+    string stringifyParams()
+    {
+        string s;
+        s += string("Search type: ") + (isRangeSearch ? "range search" : "certain amount of numbers") + "\n";
+        s += (isRangeSearch ? string("Upper bound value: ") : string("Amount of prime numbers: ")) + std::to_string(value) + "\n";
+        s += string("File with sequence: ") + filename + "\n";
+        s += string("Output type: ") + (isRowOutput ? "row" : "column") + "\n";
+
+        string type;
+        if (sequenceType == 0)
+        {
+            type = "all simple numbers";
+        }
+        if (sequenceType == 1)
+        {
+            type = "Sophie Germain prime numbers";
+        }
+        if (sequenceType == 2)
+        {
+            type = "Mersenn prime numbers";
+        }
+        s += string("Sequence type: ") + type;
+
+        return s;
     }
 
     void printParams()
     {
-        cout << "Type: " << (isRangeSearch ? "range search" : "certain amount of numbers") << endl;
-        cout << "Value: " << value << endl;
-        cout << "Filename: " << filename << endl;
-        cout << "Output type: " << (isRowOutput ? "row" : "column") << endl;
-
-        string s;
-        if (sequenceType == 0)
-        {
-            s = "all simple numbers";
-        }
-        if (sequenceType == 1)
-        {
-            s = "Sophie Germain prime numbers";
-        }
-        if (sequenceType == 2)
-        {
-            s = "Mersenn prime numbers";
-        }
-        cout << "Sequence type: " << s << endl;
+        cout << stringifyParams() << endl;
     }
 };
 
-void print(const Primes& primes, string filename, bool isRowOutput, int sequenceType)
+void writeLog(ParamStorage storage, int count, int memoryUsage)
+{
+    if (storage.logfile.empty())
+    {
+        cout << "There is no log file name in command line params. Log will not be written." << endl;
+        return;
+    }
+
+    ofstream fout(storage.logfile, ios::app);
+
+    if (!fout.is_open())
+    {
+        cout << "Can't open log file! It will not be written." << endl;
+        return;
+    }
+
+    fout << "----------START RECORDING----------" << endl;
+    fout << "Record takes " << (count * 1.0 / 1000) << " seconds." << endl;
+    fout << "Memory usage is " << (memoryUsage * 1.0 / 1000000) << " MB." << endl;
+    fout << storage.stringifyParams() << endl;
+    fout << "----------FINISH RECORDING---------" << endl << endl;
+}
+
+void print(const Primes& primes, const ParamStorage& storage)
 {
     ofstream fout;
 
     bool isFileOutput = false;
 
-    if (!filename.empty())
+    if (!storage.filename.empty())
     {
-        fout.open(filename);
-        isFileOutput = true;
+        fout.open(storage.filename);
+
+        if (!fout.is_open())
+        {
+            cout << "Can't open file to write sequence! Result will be written to console." << endl;
+            isFileOutput = false;
+        }
+        else
+        {
+            isFileOutput = true;
+        }
     }
 
-    string separator = (isRowOutput) ? " " : "\n";
+    string separator = (storage.isRowOutput) ? " " : "\n";
 
     auto checkSophieGermainPrime = [primes](int n) // Простое число Софи Жермен (такое, что 2*p + 1 - простое)
     {
@@ -106,14 +152,14 @@ void print(const Primes& primes, string filename, bool isRowOutput, int sequence
     {
         int value = *it;
 
-        if (sequenceType == 1)
+        if (storage.sequenceType == 1)
         {
             if (!checkSophieGermainPrime(value))
             {
                 continue;
             }
         }
-        if (sequenceType == 2)
+        if (storage.sequenceType == 2)
         {
             if (!checkMersennPrime(value))
             {
@@ -139,8 +185,14 @@ int main(int argc, char** argv)
     storage.printParams();
 
     Primes p(storage.isRangeSearch, storage.value);
+
+    auto start = std::chrono::steady_clock::now();
     p.calculatePrimes();
-    print(p, storage.filename, storage.isRowOutput, storage.sequenceType);
+    auto finish = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start);
+
+    writeLog(storage, elapsed.count(), p.sizeofElement() * p.size());
+    print(p, storage);
 
     return 0;
 }
