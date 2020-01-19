@@ -13,6 +13,15 @@ Primes::Primes(const Primes& primes) : isRangeSearch(primes.isRangeSearch), valu
     }
 }
 
+Primes::Primes(Primes&& primes)
+{
+    for (Iterator it = primes.begin(); it != primes.end(); it++)
+    {
+        append(*it);
+    }
+    primes.clear();
+}
+
 Primes& Primes::operator=(const Primes& primes)
 {
     clear();
@@ -20,6 +29,17 @@ Primes& Primes::operator=(const Primes& primes)
     {
         append(*it);
     }
+    return *this;
+}
+
+Primes& Primes::operator=(Primes&& primes)
+{
+    clear();
+    for (Iterator it = primes.begin(); it != primes.end(); it++)
+    {
+        append(*it);
+    }
+    primes.clear();
     return *this;
 }
 

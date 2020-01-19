@@ -38,8 +38,10 @@ public:
 
     Primes(bool isRangeSearch, int value);
     Primes(const Primes& primes);
+    Primes(Primes&& primes);
 
     Primes& operator=(const Primes& primes);
+    Primes& operator=(Primes&& primes);
 
     void calculatePrimes();
 
