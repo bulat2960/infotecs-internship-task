@@ -35,7 +35,12 @@ public:
         bool operator!=(const Iterator& it) {return node != it.node;}
     };
 
-    Primes(bool findType, int findTypeValue);
+    Primes(bool isRangeSearch, int value);
+    Primes(const Primes& primes);
+
+    Primes& operator=(const Primes& primes);
+
+    void clear();
 
     void calculatePrimes();
 

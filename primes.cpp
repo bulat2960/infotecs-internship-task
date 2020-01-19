@@ -5,6 +5,24 @@ Primes::Primes(bool isRangeSearch, int value) : isRangeSearch(isRangeSearch), va
 
 }
 
+Primes::Primes(const Primes& primes) : isRangeSearch(primes.isRangeSearch), value(primes.value)
+{
+    for (Iterator it = primes.begin(); it != primes.end(); it++)
+    {
+        append(*it);
+    }
+}
+
+Primes& Primes::operator=(const Primes& primes)
+{
+    clear();
+    for (Iterator it = primes.begin(); it != primes.end(); it++)
+    {
+        append(*it);
+    }
+    return *this;
+}
+
 Primes::Iterator Primes::begin() const
 {
     return Iterator(head);
@@ -28,6 +46,17 @@ void Primes::append(int value)
     {
         tail->next = node;
         tail = node;
+    }
+}
+
+void Primes::clear()
+{
+    int s = size();
+    for (int i = 0; i < s; i++)
+    {
+        Node* temp = head->next;
+        delete head;
+        head = temp;
     }
 }
 

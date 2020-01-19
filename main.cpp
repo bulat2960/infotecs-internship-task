@@ -185,6 +185,8 @@ int main(int argc, char** argv)
     storage.printParams();
 
     Primes p(storage.isRangeSearch, storage.value);
+    p.calculatePrimes();
+    print(p, storage);
 
     auto start = std::chrono::steady_clock::now();
     p.calculatePrimes();
