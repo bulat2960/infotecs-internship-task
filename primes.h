@@ -22,6 +22,7 @@ private:
     int value;
 private:
     void append(int value);
+    void clear();
 public:
     class Iterator
     {
@@ -40,8 +41,6 @@ public:
 
     Primes& operator=(const Primes& primes);
 
-    void clear();
-
     void calculatePrimes();
 
     bool isPrime(int x) const;
@@ -50,7 +49,9 @@ public:
     Iterator end() const;
 
     int size() const;
-    int sizeofElement() const;
+    int sizeofNode() const;
+
+    ~Primes();
 };
 
 #endif // PRIMES_H

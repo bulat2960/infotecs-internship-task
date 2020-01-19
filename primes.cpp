@@ -111,7 +111,12 @@ int Primes::size() const
     return s;
 }
 
-int Primes::sizeofElement() const
+int Primes::sizeofNode() const
 {
     return sizeof(Node);
+}
+
+Primes::~Primes()
+{
+    clear();
 }
