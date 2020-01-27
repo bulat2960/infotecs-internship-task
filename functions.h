@@ -112,13 +112,14 @@ bool checkSpecialPrimeType(int sequenceType, int value)
  * @param storage Хранилище параметров командной строки
  * @param count Время в миллисекундах, потраченное на вычисление простых чисел
  * @param memoryUsage Количество используемой памяти
+ * @return Результат, показывающий, прошло логирование или нет
  */
-void writeLog(const ParamStorage& storage, int count, int memoryUsage)
+bool writeLog(const ParamStorage& storage, int count, int memoryUsage)
 {
     if (storage.logfile.empty())
     {
         cout << "There is no log file name in command line params. Log will not be written." << endl;
-        return;
+        return false;
     }
 
     ofstream fout(storage.logfile, ios::app);
@@ -126,7 +127,7 @@ void writeLog(const ParamStorage& storage, int count, int memoryUsage)
     if (!fout.is_open())
     {
         cout << "Can't open log file! It will not be written." << endl;
-        return;
+        return false;
     }
 
     fout << "----------START RECORDING----------" << endl;
@@ -134,6 +135,8 @@ void writeLog(const ParamStorage& storage, int count, int memoryUsage)
     fout << "Memory usage is " << (memoryUsage * 1.0 / 1000000) << " MB." << endl << endl;
     fout << storage.stringifyParams() << endl;
     fout << "----------FINISH RECORDING---------" << endl << endl;
+
+    return true;
 }
 
 /**

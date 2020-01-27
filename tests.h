@@ -2,10 +2,13 @@
 #define TESTS_H
 
 #include <gtest/gtest.h>
+#include <chrono>
 
 #include "primes.h"
 #include "functions.h"
 #include "paramstorage.h"
+
+using namespace std::chrono;
 
 TEST(ConstructorCheckCases, CopyConstructorCheck)
 {
@@ -273,6 +276,29 @@ TEST(NonMemberTestCases, SpecialSequencesCheck)
     ASSERT_NE(checkSpecialPrimeType(2, 127), false);
     ASSERT_NE(checkSpecialPrimeType(2, 512), true);
     ASSERT_NE(checkSpecialPrimeType(2, 255), true);
+}
+
+TEST(NonMemberTestCases, LogfileWriteCheck)
+{
+    ParamStorage storage;
+    storage.logfile = "";
+
+    Primes p(storage.isRangeSearch, storage.value);
+
+    auto start = std::chrono::steady_clock::now();
+    p.calculatePrimes();
+    auto finish = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start);
+
+    int memoryUsage = sizeof(Node) * p.size();
+
+    bool logResult = writeLog(storage, elapsed.count(), memoryUsage);
+    ASSERT_EQ(logResult, false);
+
+    storage.logfile = "log.txt";
+
+    logResult = writeLog(storage, elapsed.count(), memoryUsage);
+    ASSERT_EQ(logResult, true);
 
 }
 
