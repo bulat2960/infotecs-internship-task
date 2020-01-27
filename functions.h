@@ -25,6 +25,40 @@ using std::ofstream;
 using std::cout;
 using std::endl;
 
+/**
+ * @brief Функция для проверки, является ли число простым.
+ * @param value Значение для проверки
+ * @return Логическое значение результата проверки
+ */
+bool isPrime(int value)
+{
+    for (int i = 2; i <= sqrt(value); i++)
+    {
+        if (!(value % i))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * @brief Функция, вычисляющая простое число, следующее за числом value.
+ * @param value Число, для которого нужно найти следующее простое число
+ * @return Найденное следующее простое число
+ */
+int findNextPrimeGreaterThan(int value)
+{
+    while (true)
+    {
+        value++;
+
+        if (isPrime(value))
+        {
+            return value;
+        }
+    }
+}
 
 /**
  * @brief Функция, проверяющая простые числа на принадлежность специальным последовательностям.
@@ -33,16 +67,22 @@ using std::endl;
  * @param value Значение, которое необходимо проверить
  * @return Логическое значение принадлежности value к последовательности sequenceType
  */
-bool checkSpecialPrimeType(const Primes& primes, int sequenceType, int value)
+bool checkSpecialPrimeType(int sequenceType, int value)
 {
+    // Если число не простое - не проверять
+    if (!isPrime(value))
+    {
+        return false;
+    }
+
     if (sequenceType == 0) // Если не выбрана специальная последовательность - разрешать выводить всё
     {
         return true;
     }
 
-    auto checkSophieGermainPrime = [primes](int n) -> bool // Простое число Софи Жермен (такое, что 2*p + 1 - простое)
+    auto checkSophieGermainPrime = [](int n) -> bool // Простое число Софи Жермен (такое, что 2*p + 1 - простое)
     {
-        return primes.isPrime(2 * n + 1);
+        return isPrime(2 * n + 1);
     };
 
     auto checkMersennPrime = [](int n) -> bool // Простое число Мерсенна (число вида 2^n - 1)
@@ -129,7 +169,7 @@ void print(const Primes& primes, const ParamStorage& storage)
     {
         int value = *it;
 
-        bool needOutput = checkSpecialPrimeType(primes, storage.sequenceType, value);
+        bool needOutput = checkSpecialPrimeType(storage.sequenceType, value);
 
         if (!needOutput)
         {
