@@ -72,6 +72,8 @@ void Primes::append(int value)
 void Primes::clear()
 {
     int s = size();
+
+    // Последовательно проходим по элементам списка и удаляем их
     for (int i = 0; i < s; i++)
     {
         Node* temp = head->next;
@@ -94,7 +96,7 @@ bool Primes::isPrime(int x) const
 
 void Primes::calculatePrimes()
 {
-    if (isRangeSearch)
+    if (isRangeSearch) // Режим поиска "диапазон"
     {
         for (int i = 2; i <= value; i++)
         {
@@ -104,7 +106,7 @@ void Primes::calculatePrimes()
             }
         }
     }
-    else
+    else // Режим поиска "определенное количество чисел"
     {
         int addCounter = 0;
         int numberCounter = 2;
@@ -124,6 +126,8 @@ void Primes::calculatePrimes()
 int Primes::size() const
 {
     int s = 0;
+
+    // Считаем количество элементов в списке
     for (Iterator it = begin(); it != end(); it++)
     {
         s++;
@@ -131,9 +135,10 @@ int Primes::size() const
     return s;
 }
 
-int Primes::sizeofNode() const
+int Primes::sizeofContainer() const
 {
-    return sizeof(Node);
+    // Возвращаем размер узла Node, умноженный на количество элементов в списке
+    return sizeof(Node) * size();
 }
 
 Primes::~Primes()

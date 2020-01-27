@@ -219,9 +219,7 @@ int main(int argc, char** argv)
     auto finish = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start);
 
-    int memoryUsage = p.sizeofNode() * p.size();
-
-    writeLog(storage, elapsed.count(), memoryUsage);
+    writeLog(storage, elapsed.count(), p.sizeofContainer());
     print(p, storage);
 
     return 0;
