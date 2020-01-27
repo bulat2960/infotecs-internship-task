@@ -10,8 +10,28 @@
 
 using namespace std;
 
+/**
+ * @brief Функция, проверяющая простые числа на принадлежность специальным последовательностям.
+ * @param primes Контейнер, содержащий простые числа
+ * @param sequenceType Тип последовательности, выбранной для проверки
+ * @param value Значение, которое необходимо проверить
+ * @return Логическое значение принадлежности value к последовательности sequenceType
+ */
 bool checkSpecialPrimeType(const Primes& primes, int sequenceType, int value);
+
+/**
+ * @brief Функция для записи лога
+ * @param storage Хранилище параметров командной строки
+ * @param count Время в миллисекундах, потраченное на вычисление простых чисел
+ * @param memoryUsage Количество используемой памяти
+ */
 void writeLog(const ParamStorage& storage, int count, int memoryUsage);
+
+/**
+ * @brief Функция для вывода вычисленных чисел на экран или в файл
+ * @param primes Контейнер, содержащий простые числа
+ * @param storage Хранилище параметров командной строки
+ */
 void print(const Primes& primes, const ParamStorage& storage);
 
 
@@ -19,7 +39,6 @@ int main(int argc, char** argv)
 {
     ParamStorage storage;
     storage.setParams(argc, argv);
-    cout << storage.stringifyParams() << endl;
 
     Primes p(storage.isRangeSearch, storage.value);
 
@@ -30,8 +49,8 @@ int main(int argc, char** argv)
 
     int memoryUsage = sizeof(Node) * p.size();
 
-    writeLog(storage, elapsed.count(), memoryUsage);
     print(p, storage);
+    writeLog(storage, elapsed.count(), memoryUsage);
 
     return 0;
 }
@@ -97,6 +116,8 @@ void writeLog(const ParamStorage& storage, int count, int memoryUsage)
 
 void print(const Primes& primes, const ParamStorage& storage)
 {
+    cout << storage.stringifyParams() << endl;
+
     ofstream fout;
 
     bool isFileOutput = false;
