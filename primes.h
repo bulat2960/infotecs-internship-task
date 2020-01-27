@@ -53,6 +53,13 @@ private:
      * @brief Очищает контейнер, удаляя все элементы.
      */
     void clear();
+
+    /**
+     * @brief Функция для проверки, является ли число простым.
+     * @param x Проверяемое на простоту целое число
+     * @return Логическое значение, является ли число простым
+     */
+    bool isPrime(int x) const;
 public:
     /**
      * @brief Класс-итератор, позволяющий проходить по элементам контейнера.
@@ -78,21 +85,21 @@ public:
          * @brief Оператор разыменования итератора, позволяющий получить значение объекта.
          * @return Ссылка на значение, хранящееся в узле списка, на который указывает итератор
          */
-        int& operator*() { return node->data; }
+        int& operator*() const { return node->data; }
 
         /**
          * @brief Оператор равенства итераторов для проверки, не указывают ли два итератора на один элемент.
          * @param it Другой объект-итератор
          * @return Значение true, если итераторы равны, false в противном случае
          */
-        bool operator==(const Iterator& it) { return node == it.node; }
+        bool operator==(const Iterator& it) const { return node == it.node; }
 
         /**
          * @brief Оператор "не равно", имеющий действие, противоположное bool operator==(const Iterator& it).
          * @param it Другой объект-итератор
          * @return Значение true, если итераторы не равны, false в противном случае
          */
-        bool operator!=(const Iterator& it) { return node != it.node; }
+        bool operator!=(const Iterator& it) const { return node != it.node; }
     };
 
     /**
@@ -102,7 +109,7 @@ public:
      * @param value Значение, зависящее от режима (в режиме "диапазон" является верхней границей поиска,
      *  в режиме "количество чисел" - необходимым количеством чисел для поиска)
      */
-    Primes(bool isRangeSearch, int value);
+    Primes(bool isRangeSearch = true, int value = 100);
 
     /**
      * @brief Конструктор копирования контейнера.
@@ -137,13 +144,6 @@ public:
      *  value простых чисел.
      */
     void calculatePrimes();
-
-    /**
-     * @brief Функция для проверки, является ли число простым.
-     * @param x Проверяемое на простоту целое число
-     * @return Логическое значение, является ли число простым
-     */
-    bool isPrime(int x) const;
 
     /**
      * @brief Итератор, указывающий на начало контейнера.

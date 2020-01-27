@@ -13,8 +13,8 @@ Primes::Primes(const Primes& primes) : isRangeSearch(primes.isRangeSearch), valu
     }
 }
 
-Primes::Primes(Primes&& primes)
-{
+Primes::Primes(Primes&& primes) : isRangeSearch(primes.isRangeSearch), value(primes.value)
+{   
     for (Iterator it = primes.begin(); it != primes.end(); it++)
     {
         append(*it);
@@ -24,6 +24,9 @@ Primes::Primes(Primes&& primes)
 
 Primes& Primes::operator=(const Primes& primes)
 {
+    isRangeSearch = primes.isRangeSearch;
+    value = primes.value;
+
     clear();
     for (Iterator it = primes.begin(); it != primes.end(); it++)
     {
@@ -34,6 +37,9 @@ Primes& Primes::operator=(const Primes& primes)
 
 Primes& Primes::operator=(Primes&& primes)
 {
+    isRangeSearch = primes.isRangeSearch;
+    value = primes.value;
+
     clear();
     for (Iterator it = primes.begin(); it != primes.end(); it++)
     {
