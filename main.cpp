@@ -14,7 +14,7 @@ struct ParamStorage
     bool isRangeSearch = true; // true - режим "диапазон", false - режим "количество чисел"
     int value = 100; // значение для заданного режима
     string filename; // Файл для вывода, по умолчанию не задан (если не задан - печать в консоль)
-    bool isRowOutput = false; // true - режим печати в строчку, false - режим печати в столбец
+    bool isRowOutput = true; // true - режим печати в строчку, false - режим печати в столбец
     int sequenceType = 0; // 0 - по умолчанию (вывод всех простых чисел), >0 - спец. последовательность
     string logfile; // Файл для логирования информации
 
@@ -63,10 +63,6 @@ struct ParamStorage
         s += string(isRangeSearch ? "Upper bound value: " : "Amount of prime numbers: ");
         s += std::to_string(value) + "\n";
 
-        // Имя файла с запрашиваемой последовательностью
-        s += string("File with sequence: ");
-        s += filename + "\n";
-
         // Тип вывода (стоблец или строка)
         s += string("Output type: ");
         s += string(isRowOutput ? "row" : "column") + "\n";
@@ -85,7 +81,11 @@ struct ParamStorage
         {
             type = "Mersenn prime numbers";
         }
-        s += string("Sequence type: ") + type;
+        s += string("Sequence type: ") + type + "\n";
+
+        // Имя файла с запрашиваемой последовательностью
+        s += string("File with sequence: ");
+        s += string(filename.empty() ? "None (console output)" : filename);
 
         return s;
     }
@@ -114,7 +114,7 @@ void writeLog(const ParamStorage& storage, int count, int memoryUsage)
 
     fout << "----------START RECORDING----------" << endl;
     fout << "Record takes " << (count * 1.0 / 1000) << " seconds." << endl;
-    fout << "Memory usage is " << (memoryUsage * 1.0 / 1000000) << " MB." << endl;
+    fout << "Memory usage is " << (memoryUsage * 1.0 / 1000000) << " MB." << endl << endl;
     fout << storage.stringifyParams() << endl;
     fout << "----------FINISH RECORDING---------" << endl << endl;
 }
@@ -194,6 +194,15 @@ void print(const Primes& primes, const ParamStorage& storage)
         {
             cout << value << separator;
         }
+    }
+
+    if (isFileOutput)
+    {
+        fout << endl;
+    }
+    else
+    {
+        cout << endl;
     }
 }
 
