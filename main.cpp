@@ -2,6 +2,8 @@
 #include <string>
 #include <fstream>
 #include <chrono>
+#include <functional>
+#include <vector>
 
 #include "primes.h"
 
@@ -117,6 +119,39 @@ void writeLog(const ParamStorage& storage, int count, int memoryUsage)
     fout << "----------FINISH RECORDING---------" << endl << endl;
 }
 
+bool checkSpecialPrimeType(const Primes& primes, int sequenceType, int value)
+{
+    if (sequenceType == 0) // Если не выбрана специальная последовательность - разрешать выводить всё
+    {
+        return true;
+    }
+
+    auto checkSophieGermainPrime = [primes](int n) -> bool // Простое число Софи Жермен (такое, что 2*p + 1 - простое)
+    {
+        return primes.isPrime(2 * n + 1);
+    };
+
+    auto checkMersennPrime = [](int n) -> bool // Простое число Мерсенна (число вида 2^n - 1)
+    {
+        n += 1;
+
+        int start = 1;
+        while (start <= n)
+        {
+            if (start == n)
+            {
+                return true;
+            }
+            start *= 2;
+        }
+        return false;
+    };
+
+    vector<function<bool(int)>> checks = {checkSophieGermainPrime, checkMersennPrime};
+
+    return checks[sequenceType - 1](value);
+}
+
 void print(const Primes& primes, const ParamStorage& storage)
 {
     ofstream fout;
@@ -140,44 +175,15 @@ void print(const Primes& primes, const ParamStorage& storage)
 
     string separator = (storage.isRowOutput) ? " " : "\n";
 
-    auto checkSophieGermainPrime = [primes](int n) // Простое число Софи Жермен (такое, что 2*p + 1 - простое)
-    {
-        return primes.isPrime(2 * n + 1);
-    };
-
-    auto checkMersennPrime = [](int n) // Простое число Мерсенна (число вида 2^n - 1)
-    {
-        n += 1;
-
-        int start = 1;
-        while (start <= n)
-        {
-            if (start == n)
-            {
-                return true;
-            }
-            start *= 2;
-        }
-        return false;
-    };
-
     for (auto it = primes.begin(); it != primes.end(); it++)
     {
         int value = *it;
 
-        if (storage.sequenceType == 1)
+        bool needOutput = checkSpecialPrimeType(primes, storage.sequenceType, value);
+
+        if (!needOutput)
         {
-            if (!checkSophieGermainPrime(value))
-            {
-                continue;
-            }
-        }
-        if (storage.sequenceType == 2)
-        {
-            if (!checkMersennPrime(value))
-            {
-                continue;
-            }
+            continue;
         }
 
         if (isFileOutput)
