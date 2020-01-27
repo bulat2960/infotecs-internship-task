@@ -33,6 +33,10 @@ void ParamStorage::setParams(int argc, char** argv)
         {
             logfile = string(argv[i + 1]);
         }
+        else if (param == "--start-tests")
+        {
+            tests = true;
+        }
     }
 }
 
