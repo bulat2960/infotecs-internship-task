@@ -135,12 +135,6 @@ int Primes::size() const
     return s;
 }
 
-int Primes::sizeofContainer() const
-{
-    // Возвращаем размер узла Node, умноженный на количество элементов в списке
-    return sizeof(Node) * size();
-}
-
 Primes::~Primes()
 {
     clear();

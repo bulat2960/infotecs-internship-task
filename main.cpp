@@ -6,118 +6,37 @@
 #include <vector>
 
 #include "primes.h"
+#include "paramstorage.h"
 
 using namespace std;
 
-struct ParamStorage
+bool checkSpecialPrimeType(const Primes& primes, int sequenceType, int value);
+void writeLog(const ParamStorage& storage, int count, int memoryUsage);
+void print(const Primes& primes, const ParamStorage& storage);
+
+
+int main(int argc, char** argv)
 {
-    bool isRangeSearch = true; // true - режим "диапазон", false - режим "количество чисел"
-    int value = 100; // значение для заданного режима
-    string filename; // Файл для вывода, по умолчанию не задан (если не задан - печать в консоль)
-    bool isRowOutput = true; // true - режим печати в строчку, false - режим печати в столбец
-    int sequenceType = 0; // 0 - по умолчанию (вывод всех простых чисел), >0 - спец. последовательность
-    string logfile; // Файл для логирования информации
+    ParamStorage storage;
+    storage.setParams(argc, argv);
+    cout << storage.stringifyParams() << endl;
 
-    void setParams(int argc, char** argv)
-    {
-        for (int i = 1; i < argc; i += 2)
-        {
-            string param = string(argv[i]);
+    Primes p(storage.isRangeSearch, storage.value);
 
-            if (param == "-t" || param == "--type") // Установка режима ("диапазон" или "количество чисел"
-            {
-                isRangeSearch = atoi(argv[i + 1]);
-            }
-            else if (param == "-n" || param == "--number") // Установка значения
-            {
-                value = atoi(argv[i + 1]);
-            }
-            else if (param == "-f" || param == "--filename") // Установка имени файла
-            {
-                filename = string(argv[i + 1]);
-            }
-            else if (param== "-o" || param == "--option") // Установка режима вывода (столбец / строка)
-            {
-                isRowOutput = atoi(argv[i + 1]);
-            }
-            else if (param == "-s" || param == "--sequence") // Установка типа специальной последовательности
-            {
-                sequenceType = atoi(argv[i + 1]);
-            }
-            else if (param == "-l" || param == "--log") // Установка имени логфайла
-            {
-                logfile = string(argv[i + 1]);
-            }
-        }
-    }
+    auto start = std::chrono::steady_clock::now();
+    p.calculatePrimes();
+    auto finish = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start);
 
-    string stringifyParams() const
-    {
-        string s;
+    int memoryUsage = sizeof(Node) * p.size();
 
-        // Параметр типа поиска
-        s += string("Search type: ");
-        s += string(isRangeSearch ? "range search" : "certain amount of numbers") + "\n";
+    writeLog(storage, elapsed.count(), memoryUsage);
+    print(p, storage);
 
-        // Параметр режима (поиск "диапазон" или "количество чисел")
-        s += string(isRangeSearch ? "Upper bound value: " : "Amount of prime numbers: ");
-        s += std::to_string(value) + "\n";
-
-        // Тип вывода (стоблец или строка)
-        s += string("Output type: ");
-        s += string(isRowOutput ? "row" : "column") + "\n";
-
-        // Тип выводимой последовательности (общий вид или специальный, название специального вида)
-        string type;
-        if (sequenceType == 0)
-        {
-            type = "all simple numbers";
-        }
-        if (sequenceType == 1)
-        {
-            type = "Sophie Germain prime numbers";
-        }
-        if (sequenceType == 2)
-        {
-            type = "Mersenn prime numbers";
-        }
-        s += string("Sequence type: ") + type + "\n";
-
-        // Имя файла с запрашиваемой последовательностью
-        s += string("File with sequence: ");
-        s += string(filename.empty() ? "None (console output)" : filename);
-
-        return s;
-    }
-
-    void printParams()
-    {
-        cout << stringifyParams() << endl;
-    }
-};
-
-void writeLog(const ParamStorage& storage, int count, int memoryUsage)
-{
-    if (storage.logfile.empty())
-    {
-        cout << "There is no log file name in command line params. Log will not be written." << endl;
-        return;
-    }
-
-    ofstream fout(storage.logfile, ios::app);
-
-    if (!fout.is_open())
-    {
-        cout << "Can't open log file! It will not be written." << endl;
-        return;
-    }
-
-    fout << "----------START RECORDING----------" << endl;
-    fout << "Record takes " << (count * 1.0 / 1000) << " seconds." << endl;
-    fout << "Memory usage is " << (memoryUsage * 1.0 / 1000000) << " MB." << endl << endl;
-    fout << storage.stringifyParams() << endl;
-    fout << "----------FINISH RECORDING---------" << endl << endl;
+    return 0;
 }
+
+
 
 bool checkSpecialPrimeType(const Primes& primes, int sequenceType, int value)
 {
@@ -151,6 +70,30 @@ bool checkSpecialPrimeType(const Primes& primes, int sequenceType, int value)
 
     return checks[sequenceType - 1](value);
 }
+
+void writeLog(const ParamStorage& storage, int count, int memoryUsage)
+{
+    if (storage.logfile.empty())
+    {
+        cout << "There is no log file name in command line params. Log will not be written." << endl;
+        return;
+    }
+
+    ofstream fout(storage.logfile, ios::app);
+
+    if (!fout.is_open())
+    {
+        cout << "Can't open log file! It will not be written." << endl;
+        return;
+    }
+
+    fout << "----------START RECORDING----------" << endl;
+    fout << "Record takes " << (count * 1.0 / 1000) << " seconds." << endl;
+    fout << "Memory usage is " << (memoryUsage * 1.0 / 1000000) << " MB." << endl << endl;
+    fout << storage.stringifyParams() << endl;
+    fout << "----------FINISH RECORDING---------" << endl << endl;
+}
+
 
 void print(const Primes& primes, const ParamStorage& storage)
 {
@@ -206,21 +149,4 @@ void print(const Primes& primes, const ParamStorage& storage)
     }
 }
 
-int main(int argc, char** argv)
-{
-    ParamStorage storage;
-    storage.setParams(argc, argv);
-    storage.printParams();
 
-    Primes p(storage.isRangeSearch, storage.value);
-
-    auto start = std::chrono::steady_clock::now();
-    p.calculatePrimes();
-    auto finish = std::chrono::steady_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start);
-
-    writeLog(storage, elapsed.count(), p.sizeofContainer());
-    print(p, storage);
-
-    return 0;
-}
