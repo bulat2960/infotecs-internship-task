@@ -1,3 +1,9 @@
+/**
+ * @file
+ * @brief Главный исполняемый файл программы.
+ */
+
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -35,6 +41,12 @@ void writeLog(const ParamStorage& storage, int count, int memoryUsage);
 void print(const Primes& primes, const ParamStorage& storage);
 
 
+/**
+ * @brief Входная точка в программу.
+ * @param argc Количество аргументов командной строки
+ * @param argv Список аргументов командной строки
+ * @return Статус завершения работы программы
+ */
 int main(int argc, char** argv)
 {
     ParamStorage storage;
