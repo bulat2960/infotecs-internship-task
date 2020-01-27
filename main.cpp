@@ -22,41 +22,54 @@ struct ParamStorage
         {
             string param = string(argv[i]);
 
-            if (param == "-t" || param == "--type")
+            if (param == "-t" || param == "--type") // Установка режима ("диапазон" или "количество чисел"
             {
                 isRangeSearch = atoi(argv[i + 1]);
             }
-            else if (param == "-n" || param == "--number")
+            else if (param == "-n" || param == "--number") // Установка значения
             {
                 value = atoi(argv[i + 1]);
             }
-            else if (param == "-f" || param == "--filename")
+            else if (param == "-f" || param == "--filename") // Установка имени файла
             {
                 filename = string(argv[i + 1]);
             }
-            else if (param== "-o" || param == "--option")
+            else if (param== "-o" || param == "--option") // Установка режима вывода (столбец / строка)
             {
                 isRowOutput = atoi(argv[i + 1]);
             }
-            else if (param == "-s" || param == "--sequence")
+            else if (param == "-s" || param == "--sequence") // Установка типа специальной последовательности
             {
                 sequenceType = atoi(argv[i + 1]);
             }
-            else if (param == "-l" || param == "--log")
+            else if (param == "-l" || param == "--log") // Установка имени логфайла
             {
                 logfile = string(argv[i + 1]);
             }
         }
     }
 
-    string stringifyParams()
+    string stringifyParams() const
     {
         string s;
-        s += string("Search type: ") + (isRangeSearch ? "range search" : "certain amount of numbers") + "\n";
-        s += (isRangeSearch ? string("Upper bound value: ") : string("Amount of prime numbers: ")) + std::to_string(value) + "\n";
-        s += string("File with sequence: ") + filename + "\n";
-        s += string("Output type: ") + (isRowOutput ? "row" : "column") + "\n";
 
+        // Параметр типа поиска
+        s += string("Search type: ");
+        s += string(isRangeSearch ? "range search" : "certain amount of numbers") + "\n";
+
+        // Параметр режима (поиск "диапазон" или "количество чисел")
+        s += string(isRangeSearch ? "Upper bound value: " : "Amount of prime numbers: ");
+        s += std::to_string(value) + "\n";
+
+        // Имя файла с запрашиваемой последовательностью
+        s += string("File with sequence: ");
+        s += filename + "\n";
+
+        // Тип вывода (стоблец или строка)
+        s += string("Output type: ");
+        s += string(isRowOutput ? "row" : "column") + "\n";
+
+        // Тип выводимой последовательности (общий вид или специальный, название специального вида)
         string type;
         if (sequenceType == 0)
         {
@@ -81,7 +94,7 @@ struct ParamStorage
     }
 };
 
-void writeLog(ParamStorage storage, int count, int memoryUsage)
+void writeLog(const ParamStorage& storage, int count, int memoryUsage)
 {
     if (storage.logfile.empty())
     {
@@ -191,7 +204,9 @@ int main(int argc, char** argv)
     auto finish = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start);
 
-    writeLog(storage, elapsed.count(), p.sizeofNode() * p.size());
+    int memoryUsage = p.sizeofNode() * p.size();
+
+    writeLog(storage, elapsed.count(), memoryUsage);
     print(p, storage);
 
     return 0;
