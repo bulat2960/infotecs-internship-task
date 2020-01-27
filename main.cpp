@@ -3,7 +3,6 @@
  * @brief Главный исполняемый файл программы.
  */
 
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -26,7 +25,7 @@ using namespace std;
 bool checkSpecialPrimeType(const Primes& primes, int sequenceType, int value);
 
 /**
- * @brief Функция для записи лога
+ * @brief Функция для записи лога.
  * @param storage Хранилище параметров командной строки
  * @param count Время в миллисекундах, потраченное на вычисление простых чисел
  * @param memoryUsage Количество используемой памяти
@@ -34,7 +33,7 @@ bool checkSpecialPrimeType(const Primes& primes, int sequenceType, int value);
 void writeLog(const ParamStorage& storage, int count, int memoryUsage);
 
 /**
- * @brief Функция для вывода вычисленных чисел на экран или в файл
+ * @brief Функция для вывода вычисленных чисел на экран или в файл.
  * @param primes Контейнер, содержащий простые числа
  * @param storage Хранилище параметров командной строки
  */
