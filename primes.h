@@ -82,14 +82,14 @@ public:
 
         /**
          * @brief Оператор равенства итераторов для проверки, не указывают ли два итератора на один элемент.
-         * @param Другой объект-итератор
+         * @param it Другой объект-итератор
          * @return Значение true, если итераторы равны, false в противном случае
          */
         bool operator==(const Iterator& it) { return node == it.node; }
 
         /**
          * @brief Оператор "не равно", имеющий действие, противоположное bool operator==(const Iterator& it).
-         * @param Другой объект-итератор
+         * @param it Другой объект-итератор
          * @return Значение true, если итераторы не равны, false в противном случае
          */
         bool operator!=(const Iterator& it) { return node != it.node; }
